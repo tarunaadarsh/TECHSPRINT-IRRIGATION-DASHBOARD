@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import {
-    Activity, Droplet, Thermometer, Wind, Zap, AlertTriangle, CheckCircle,
-    TrendingUp, FlaskConical, Settings, Sprout, Bell, Droplets, Sun,
-    ChevronRight, Database, Table, Clock, Gauge, MapPin, BarChart3,
-    CloudRain, Cloud, ArrowUp, ArrowDown, Shield, Leaf, Upload
+    Activity, Droplets, Wind, Thermometer,
+    BarChart3, Calendar, Settings, Bell,
+    Search, Menu, X, ChevronRight,
+    Leaf, CloudRain, Sun, Sprout,
+    AlertTriangle, CheckCircle, TrendingUp,
+    Play, Pause, RefreshCw, Zap, Upload, Camera
 } from 'lucide-react';
 import LeafBackground from './components/LeafBackground';
 import SwayingLeaf from './components/SwayingLeaf';
