@@ -112,13 +112,13 @@ const App = () => {
             setTimeout(() => setShowDropletAnimation(false), 2000);
         } catch (err) {
             console.error("Fetch error:", err);
-            // Only show full error screen for network errors or critical backend failures
+            // DEBUG: Show exact error details
             if (!err.response) {
-                setError("Cannot connect to backend. Please check your internet connection.");
+                setError(`Network Error: Cannot connect to ${API_BASE}. Check internet or backend URL.`);
             } else if (err.response?.data?.error) {
                 setError(err.response.data.error);
             } else {
-                setError("Unable to connect to irrigation service.");
+                setError(`Server Error (${err.response.status} ${err.response.statusText}): ${API_BASE}/status`);
             }
 
             setLoading(false);

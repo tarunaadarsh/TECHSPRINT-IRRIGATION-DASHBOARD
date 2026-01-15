@@ -1,6 +1,6 @@
-// Centralized API Configuration
-// This ensures the app works even if environment variables are missing in production
+const PROD_API = "https://techsprint-irrigation-system.onrender.com/api";
 
-export const API_BASE = import.meta.env.VITE_API_BASE || "https://techsprint-irrigation-system.onrender.com/api";
-
-console.log('🔌 API Base URL:', API_BASE);
+export const API_BASE =
+    import.meta.env.VITE_API_BASE && import.meta.env.VITE_API_BASE.trim() !== ""
+        ? import.meta.env.VITE_API_BASE
+        : PROD_API;
