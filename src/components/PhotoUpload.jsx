@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ImageIcon, X, Upload, CheckCircle, Droplets } from 'lucide-react';
@@ -14,6 +14,15 @@ const PhotoUpload = ({ selectedField, onClose, onAnalysisComplete }) => {
     const [predictions, setPredictions] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
     const fileInputRef = useRef(null);
+
+    // Sync isOpen state with selectedField prop
+    useEffect(() => {
+        if (selectedField) {
+            setIsOpen(true);
+        } else {
+            setIsOpen(false);
+        }
+    }, [selectedField]);
 
     const handleFileSelect = (event) => {
         const file = event.target.files[0];
