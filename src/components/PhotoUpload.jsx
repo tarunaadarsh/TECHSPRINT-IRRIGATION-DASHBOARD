@@ -93,7 +93,15 @@ const PhotoUpload = ({ selectedField, onClose, onAnalysisComplete }) => {
         // ...
 
         if (!response.ok) {
-            throw new Error(`API error: ${response.statusText}`);
+            let errorMessage = `API error: ${response.status} ${response.statusText}`;
+            try {
+                const errorData = await response.json();
+                if (errorData.error) errorMessage = errorData.error;
+                if (errorData.details) errorMessage += ` (${errorData.details})`;
+            } catch (e) {
+                // Could not parse error JSON, use status text
+            }
+            throw new Error(errorMessage);
         }
 
         const result = await response.json();
