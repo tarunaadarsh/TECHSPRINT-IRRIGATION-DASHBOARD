@@ -19,7 +19,7 @@ import {
 } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const API_BASE = import.meta.env.VITE_API_BASE;
+import { API_BASE } from './config';
 
 const App = () => {
     const { t, i18n } = useTranslation();
