@@ -1731,21 +1731,6 @@ const FieldCard = ({ field, onImageUpload, predictions }) => {
                 transition={{ duration: 4, repeat: Infinity }}
             />
 
-            {/* Upload Indicator */}
-            {isHovered && (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="absolute inset-0 bg-agri-green-500/10 flex items-center justify-center z-20 rounded-2xl"
-                >
-                    <div className="text-center">
-                        <Upload size={32} className="text-agri-green-500 mx-auto mb-2" />
-                        <p className="text-sm font-black text-white uppercase">{t('fields.uploadImage')}</p>
-                        <p className="text-xs text-slate-400">{t('photoUpload.analyzing').replace('...', '')} {getCropName(field.crop)}</p>
-                    </div>
-                </motion.div>
-            )}
-
             <div className="flex items-center justify-between mb-4 relative z-10">
                 <h3 className="text-xl font-black text-white flex items-center gap-2">
                     <SwayingLeaf size={20} />
@@ -1828,9 +1813,12 @@ const FieldCard = ({ field, onImageUpload, predictions }) => {
                 </div>
             )}
 
-            {/* Click hint */}
-            <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Upload size={16} className="text-slate-500" />
+            {/* Always Visible Action Button at Bottom */}
+            <div className="relative z-10 mt-4 pt-4 border-t border-white/10">
+                <button className="w-full bg-white/5 hover:bg-agri-green-500/20 text-white border border-white/10 hover:border-agri-green-500/50 py-3 rounded-xl flex items-center justify-center gap-2 transition-all group-hover:scale-[1.02]">
+                    <Camera size={18} className="text-agri-green-500" />
+                    <span className="text-xs font-black uppercase tracking-wider">{t('fields.uploadImage')}</span>
+                </button>
             </div>
         </motion.div>
     );
