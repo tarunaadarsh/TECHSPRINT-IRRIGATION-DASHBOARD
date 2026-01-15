@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ImageIcon, X, Upload, CheckCircle, Droplets } from 'lucide-react';
 
-const API_BASE = 'http://localhost:5001/api';
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 const PhotoUpload = ({ selectedField, onClose, onAnalysisComplete }) => {
     const { i18n } = useTranslation(); // Added
