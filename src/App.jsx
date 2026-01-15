@@ -46,17 +46,27 @@ const App = () => {
 
     const fetchData = async () => {
         try {
-            const [statusRes, historyRes, analyticsRes, fieldsRes] = await Promise.all([
-                axios.get(`${API_BASE}/status`),
-                axios.get(`${API_BASE}/history?hours=24&limit=100`),
-                axios.get(`${API_BASE}/analytics?days=7`),
-                axios.get(`${API_BASE}/fields`)
+            // Critical: Check connection first
+            let statusRes;
+            try {
+                statusRes = await axios.get(`${API_BASE}/status`);
+            } catch (statusErr) {
+                // If status fails, critical error (likely backend down or network issue)
+                console.error("Critical connection error:", statusErr);
+                throw statusErr;
+            }
+
+            // Non-critical: Fetch other data separately to avoid cascading failures
+            const [historyRes, analyticsRes, fieldsRes] = await Promise.all([
+                axios.get(`${API_BASE}/history?hours=24&limit=100`).catch(e => ({ data: [] })),
+                axios.get(`${API_BASE}/analytics?days=7`).catch(e => ({ data: null })),
+                axios.get(`${API_BASE}/fields`).catch(e => ({ data: [] }))
             ]);
 
-            setStatus(statusRes.data);
-            setHistory(historyRes.data || []);
-            setAnalytics(analyticsRes.data);
-            setFields(fieldsRes.data || []);
+            setStatus(statusRes?.data);
+            setHistory(historyRes?.data || []);
+            setAnalytics(analyticsRes?.data);
+            setFields(fieldsRes?.data || []);
 
             // Try to fetch crops endpoint with better error handling
             try {
@@ -68,7 +78,7 @@ const App = () => {
                     setCrops(cropsRes.data);
                 } else {
                     // Fallback: extract crops from fields data
-                    if (fieldsRes.data && Array.isArray(fieldsRes.data) && fieldsRes.data.length > 0) {
+                    if (fieldsRes?.data && Array.isArray(fieldsRes.data) && fieldsRes.data.length > 0) {
                         const uniqueCrops = [...new Set(fieldsRes.data.map(f => f.crop).filter(Boolean))];
                         setCrops(uniqueCrops.map(cropType => ({
                             cropType,
@@ -82,7 +92,7 @@ const App = () => {
                 }
             } catch (cropsErr) {
                 // Silent fallback: extract crops from fields data
-                if (fieldsRes.data && Array.isArray(fieldsRes.data) && fieldsRes.data.length > 0) {
+                if (fieldsRes?.data && Array.isArray(fieldsRes.data) && fieldsRes.data.length > 0) {
                     const uniqueCrops = [...new Set(fieldsRes.data.map(f => f.crop).filter(Boolean))];
                     setCrops(uniqueCrops.map(cropType => ({
                         cropType,
@@ -102,8 +112,15 @@ const App = () => {
             setTimeout(() => setShowDropletAnimation(false), 2000);
         } catch (err) {
             console.error("Fetch error:", err);
-            const msg = err.response?.data?.error || "Cannot connect to backend. Please check your internet connection.";
-            setError(msg);
+            // Only show full error screen for network errors or critical backend failures
+            if (!err.response) {
+                setError("Cannot connect to backend. Please check your internet connection.");
+            } else if (err.response?.data?.error) {
+                setError(err.response.data.error);
+            } else {
+                setError("Unable to connect to irrigation service.");
+            }
+
             setLoading(false);
             setTimeout(() => setShowDropletAnimation(false), 2000);
         }
